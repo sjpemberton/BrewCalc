@@ -41,8 +41,10 @@ let convertToGravPoints (grav:float<sg>) =
 let convertToGravity (gp:float<gp>) =
     ((float gp / 1000.0) + 1.0) * 1.0<sg>
 
+let pointsByVolume (gp:float<gp>) (vol : float<'u>) =  gp * vol
+
 let calculateGravPoints<[<Measure>] 'u> og (vol : float<'u>) =
-     convertToGravPoints og * vol
+     pointsByVolume (convertToGravPoints og) vol
 
 //Yeast attenuation
 let attenuation (og:float<sg>) (fg:float<sg>) =
@@ -64,10 +66,23 @@ let ABVsimple (og:float<sg>) (fg:float<sg>) : float<abv> =
 //IBU
 
 //Extract Potential - Basic
+//Can be used iteratively on a grain bill to produce a full max PPG value
 let calculateExtractPotential (potentialPoints:float<gp>) (grain:float<'u>) (vol:float<'v>) =
     (potentialPoints * grain) / vol
 
-//Efficiency
-let efficiency (og:float<sg>) (vol : float<'u>) (grain:float<kg>) :float<percentage> =
-    let extract = (vol * og * 0.14)
-    (extract / grain) * 100.0<percentage>
+//Estimated OG based on potential and efficiency
+let estimatedOriginalGravity (potential:float<gp>) (efficiency:float<percentage>) =
+    (float potential * efficiency)
+
+//Mash Efficiency from points
+let calculateEfficiency (potential:float<gp>) (actual:float<gp>) = 
+    (actual / potential) * 1.0<percentage>
+
+//Mash Efficiency - alternate - using a 'standard' 37.0 ppg. based on lager malt maximum
+let efficiency (og:float<sg>) (vol : float<'u>) (grain:float<'v>) :float<percentage> =
+    let ppg = calculateGravPoints og vol
+    ((float ppg / float grain) / 37.0) * 100.0<percentage>
+
+//Efficiency taking into account losses during process
+let calculateBrewHouseEfficiency (ppv: float<'u gp>) (apv: float<'u gp>) =
+    (apv / ppv) * 1.0<percentage>
