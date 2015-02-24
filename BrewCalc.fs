@@ -105,7 +105,7 @@ let ABVsimple (og:float<sg>) (fg:float<sg>) : float<abv> =
 let calculateRequiredGrain<[<Measure>] 'u> (gravityPoints:float<gp>) effectivePotential :float<'u> =
     FloatWithMeasure (float gravityPoints / effectivePotential)
 
-///Mash Efficiency from points
+///Mash Efficiency from points - Pre-boil points / Potential max points
 let calculateEfficiency (potential:float<gp>) (actual:float<gp>) = 
     (actual / potential) * 1.0<percentage>
 
@@ -134,9 +134,6 @@ let requiredExtract (targetGravity:float<sg>) (vol:float<usGal>) =
 let potentialPoints (grainPotential:float<ppg>) (grain:float<lb>) (vol:float<usGal>) = 
     float ((grainPotential * grain) / vol) * 1.0<gp>
 
-///Mash Efficiency from points - Pre-boil points / Potential max points
-let calculateEfficiency (potential:float<ppg>) (actual:float<ppg>) = 
-    (actual / potential) * 1.0<percentage>
 
 (**Efficiency taking into account losses during process
   Can be used to measure efficiency at various stages. Just substitute in the actual SG and Vol at a particular time. eg pre or post boil
