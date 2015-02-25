@@ -16,8 +16,8 @@ module Caculations =
     Generic Functions 
     *)
 
-    let PointsByVolume<[<Measure>] 'u> (gravity:float<sg>) = 
-        FloatWithMeasure<'u> ((float gravity - 1.0) * 1000.0)
+    let PointsByVolume (gravity:float<sg>) = 
+        FloatWithMeasure ((float gravity - 1.0) * 1000.0)
 
     let ToGravPoints (gravity:float<sg>) =
         (float gravity - 1.0) * 1000.0<gp>
@@ -60,7 +60,7 @@ module Caculations =
     Functions working on US/Metric Units. EG: PPG, lb, oz, usGallon 
     *)
 
-    ///Converts a potential extract value (PPG) and volume into total gravity points
+    ///Converts a potential extract value (PPG) and volume into total gravity points (Total sugar extraction)
     let totalGravityPoints (potential:float<ppg>) (vol : float<usGal>) =  
         (float potential * float vol) * 1.0<gp>
 
