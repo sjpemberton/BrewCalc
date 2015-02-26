@@ -60,7 +60,7 @@ module Caculations =
 
     ///Converts a points per gal (gp / usGal) and volume into total gravity points in that volume
     let totalGravityPoints (potential:float<gp / usGal>) (vol : float<usGal>) =  
-        (potential * vol)
+        potential * vol
 
     ///Gets a PPG value from a given specific gravity
     //let toPpg (gravity:float<sg>) = 
@@ -70,15 +70,15 @@ module Caculations =
     let RequiredPoints (targetGravity:float<sg>) (vol:float<usGal>) = 
         totalGravityPoints ((targetGravity |> ToGravPoints) / 1.0<usGal>) vol
 
-    ///The maximum potential points (in sgp) for a given weight of grain with the given extract potential, divided by the target volume
-    let potentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<sgp> = 
+    ///The maximum potential points (in ppg) for a given weight of grain with the given extract potential, divided by the target volume
+    let maxPotentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<ppg> = 
         (grainPotential * grain) / vol
 
 
     (**Efficiency taking into account losses during process
       Can be used to measure efficiency at various stages. Just substitute in the actual SG and Vol at a particular time. eg pre or post boil
     *)
-    let calculateBrewHouseEfficiency (potential:float<sgp>) (actual:float<sgp>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
+    let calculateBrewHouseEfficiency (potential:float<ppg>) (actual:float<ppg>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
         ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
     ///Required grain in pound based on a malt potential in %, mash efficiency and total gravity points
@@ -122,3 +122,4 @@ module Caculations =
 
 
     //IBU
+

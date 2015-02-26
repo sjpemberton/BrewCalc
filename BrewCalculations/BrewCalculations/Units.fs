@@ -43,17 +43,14 @@ module Units =
     ///Gravity Point - A Simplified brewing unit for amount of sugar dissolved in solution
     [<Measure>] type gp
 
-    ///Specific Gravity Points - The number of Gravity Points Per Us Gallon
-    [<Measure>] type sgp = gp / usGal
+    ///The number of gravity points per Gallon(US
+    [<Measure>] type ppg = gp / usGal
 
     ///Potential Gravity Points The number of Gravity points in a lb of malt
     [<Measure>] type pgp = gp / lb
 
     ///Hot Water Extract. Points per Litre per Kilo
     [<Measure>] type hwe
-
-    ///Point per Pound per Gallon(US)
-    [<Measure>] type ppg = pgp / usGal
 
     ///Gravity Points - A brewing simplification of specific gravity
     type GravityPoint =
