@@ -16,13 +16,11 @@ module Caculations =
     Generic Functions 
     *)
 
-    let PointsByVolume (gravity:float<sg>) = 
-        FloatWithMeasure ((float gravity - 1.0) * 1000.0)
-
+    ///Converts a Specific Gravity into brewing Specific Gravity Points
     let ToGravPoints (gravity:float<sg>) =
         (float gravity - 1.0) * 1000.0<gp>
 
-    ///The gravity that a single gallon of wort created from a malt with the given PPG with yield
+    ///Converts the given GP into Specific Gravity
     let ToGravity (gravityPoints:float<gp>) =
         ((float gravityPoints / 1000.0) + 1.0) * 1.0<sg>
 
@@ -43,7 +41,7 @@ module Caculations =
     let ABVsimple (og:float<sg>) (fg:float<sg>) : float<abv> = 
         FloatWithMeasure 131.0 * (og - fg)
 
-    ///Calculates required Grain in Pounds from the target gravity points, malt potential and efficiency.
+    ///Calculates required Grain in weight from the target gravity points and effective malt potential (in relation to a given weight).
     let GrainRequired<[<Measure>] 'u> (gravityPoints:float<gp>) effectivePotential :float<'u> =
         FloatWithMeasure (float gravityPoints / effectivePotential)
 
@@ -60,27 +58,27 @@ module Caculations =
     Functions working on US/Metric Units. EG: PPG, lb, oz, usGallon 
     *)
 
-    ///Converts a potential extract value (PPG) and volume into total gravity points (Total sugar extraction)
-    let totalGravityPoints (potential:float<ppg>) (vol : float<usGal>) =  
-        (float potential * float vol) * 1.0<gp>
+    ///Converts a points per gal (gp / usGal) and volume into total gravity points in that volume
+    let totalGravityPoints (potential:float<gp / usGal>) (vol : float<usGal>) =  
+        (potential * vol)
 
     ///Gets a PPG value from a given specific gravity
-    let toPpg (gravity:float<sg>) = 
-        float (gravity |> ToGravPoints) * 1.0<ppg>
+    //let toPpg (gravity:float<sg>) = 
+        //float (gravity |> ToGravPoints) * 1.0<ppg>
 
-    ///Calculates the total gravity points needed to achieve the given volume at the given specific gravity
-    let requiredExtract (targetGravity:float<sg>) (vol:float<usGal>) = 
-        totalGravityPoints (targetGravity |> PointsByVolume) vol
+    ///Calculates the total specific gravity points needed to achieve the given volume at the given specific gravity - not taking into account malt or weight
+    let RequiredPoints (targetGravity:float<sg>) (vol:float<usGal>) = 
+        totalGravityPoints ((targetGravity |> ToGravPoints) / 1.0<usGal>) vol
 
-    ///The maximum potential points for a given weight of grain with the given ppg, divided by the target volume
-    let potentialPoints (grainPotential:float<ppg>) (grain:float<lb>) (vol:float<usGal>) = 
-        float ((grainPotential * grain) / vol) * 1.0<gp>
+    ///The maximum potential points (in sgp) for a given weight of grain with the given extract potential, divided by the target volume
+    let potentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<sgp> = 
+        (grainPotential * grain) / vol
 
 
     (**Efficiency taking into account losses during process
       Can be used to measure efficiency at various stages. Just substitute in the actual SG and Vol at a particular time. eg pre or post boil
     *)
-    let calculateBrewHouseEfficiency (potential:float<ppg>) (actual:float<ppg>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
+    let calculateBrewHouseEfficiency (potential:float<sgp>) (actual:float<sgp>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
         ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
     ///Required grain in pound based on a malt potential in %, mash efficiency and total gravity points
@@ -88,10 +86,11 @@ module Caculations =
         GrainRequired<lb> gravityPoints (float((potential / 100.0) * (efficiency / 100.0) * 46.0))
 
     ///The potential gravity that an amount of grain in lb with the given ppg at a particular efficiency for a target volume 
-    let estimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<ppg>) (efficiency:float<percentage>) =
-        float ((grainPotential * grain * (efficiency / 100.0)) / vol) * 1.0<sg>
+    let estimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<gp / lb>) (efficiency:float<percentage>) =
+        ((grainPotential * grain * (float efficiency / 100.0)) / vol) * 1.0<usGal>
+        |> ToGravity
 
-    let estimateGravityFromGrainBill vol efficiency (grainBill:list<float<lb>*float<ppg>>) = 
+    let estimateGravityFromGrainBill vol efficiency (grainBill:list<float<lb>*float<pgp>>) = 
         List.fold (fun acc g -> acc + estimateGravity vol (fst g) (snd g) efficiency) 0.0<sg> grainBill
 
 

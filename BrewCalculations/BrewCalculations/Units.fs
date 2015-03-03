@@ -38,16 +38,22 @@ module Units =
 
     //Gravity
     ///Specific Gravity - Ratio of density compared to water measured in Kg/L
-    [<Measure>] type sg = kg/L
+    [<Measure>] type sg = kg / L  //gp / usGal
 
     ///Gravity Point - A Simplified brewing unit for amount of sugar dissolved in solution
     [<Measure>] type gp
+
+    ///Specific Gravity Points - The number of Gravity Points Per Us Gallon
+    [<Measure>] type sgp = gp / usGal
+
+    ///Potential Gravity Points The number of Gravity points in a lb of malt
+    [<Measure>] type pgp = gp / lb
 
     ///Hot Water Extract. Points per Litre per Kilo
     [<Measure>] type hwe
 
     ///Point per Pound per Gallon(US)
-    [<Measure>] type ppg
+    [<Measure>] type ppg = pgp / usGal
 
     ///Gravity Points - A brewing simplification of specific gravity
     type GravityPoint =
