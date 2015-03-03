@@ -59,8 +59,8 @@ module Caculations =
     *)
 
     ///Converts a points per gal (gp / usGal) and volume into total gravity points in that volume
-    let totalGravityPoints (potential:float<gp / usGal>) (vol : float<usGal>) =  
-        (potential * vol)
+    let TotalGravityPoints (potential:float<gp / usGal>) (vol : float<usGal>) =  
+        potential * vol
 
     ///Gets a PPG value from a given specific gravity
     //let toPpg (gravity:float<sg>) = 
@@ -68,30 +68,30 @@ module Caculations =
 
     ///Calculates the total specific gravity points needed to achieve the given volume at the given specific gravity - not taking into account malt or weight
     let RequiredPoints (targetGravity:float<sg>) (vol:float<usGal>) = 
-        totalGravityPoints ((targetGravity |> ToGravPoints) / 1.0<usGal>) vol
+        TotalGravityPoints ((targetGravity |> ToGravPoints) / 1.0<usGal>) vol
 
-    ///The maximum potential points (in sgp) for a given weight of grain with the given extract potential, divided by the target volume
-    let potentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<sgp> = 
+    ///The maximum potential points (in ppg) for a given weight of grain with the given extract potential, divided by the target volume
+    let MaxPotentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<ppg> = 
         (grainPotential * grain) / vol
 
 
     (**Efficiency taking into account losses during process
       Can be used to measure efficiency at various stages. Just substitute in the actual SG and Vol at a particular time. eg pre or post boil
     *)
-    let calculateBrewHouseEfficiency (potential:float<sgp>) (actual:float<sgp>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
+    let CalculateBrewHouseEfficiency (potential:float<ppg>) (actual:float<ppg>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
         ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
     ///Required grain in pound based on a malt potential in %, mash efficiency and total gravity points
-    let requiredGrainInPounds (gravityPoints:float<gp>) (potential:float<percentage>) (efficiency:float<percentage>)  =
+    let RequiredGrainInPounds (gravityPoints:float<gp>) (potential:float<percentage>) (efficiency:float<percentage>)  =
         GrainRequired<lb> gravityPoints (float((potential / 100.0) * (efficiency / 100.0) * 46.0))
 
     ///The potential gravity that an amount of grain in lb with the given ppg at a particular efficiency for a target volume 
-    let estimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<gp / lb>) (efficiency:float<percentage>) =
+    let EstimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<gp / lb>) (efficiency:float<percentage>) =
         ((grainPotential * grain * (float efficiency / 100.0)) / vol) * 1.0<usGal>
         |> ToGravity
 
-    let estimateGravityFromGrainBill vol efficiency (grainBill:list<float<lb>*float<pgp>>) = 
-        List.fold (fun acc g -> acc + estimateGravity vol (fst g) (snd g) efficiency) 0.0<sg> grainBill
+    let EstimateGravityFromGrainBill vol efficiency (grainBill:list<float<lb>*float<pgp>>) = 
+        List.fold (fun acc g -> acc + EstimateGravity vol (fst g) (snd g) efficiency) 0.0<sg> grainBill
 
 
 
@@ -104,11 +104,11 @@ module Caculations =
     //let calculateGravPointsHWE<[<Measure>] 'u> og (vol : float<L>) =
     //     pointsByVolume (og |> toGravityPoints<hwe>) vol
 
-    let private grainInKilo effectivePoints =
+    let private GrainInKilo effectivePoints =
         float (effectivePoints * (46.0<ppg> |> ppgToHwe)) * 1.0<kg>
 
     ///Required grain in kilo based on a malt potential in HWE, mash efficiency and total gravity points
-    let requiredGrainInKilo (gravityPoints:float<gp>) (potential:float<hwe>) (efficiency:float<percentage>)  =
+    let RequiredGrainInKilo (gravityPoints:float<gp>) (potential:float<hwe>) (efficiency:float<percentage>)  =
         GrainRequired<kg> gravityPoints (float(potential * (efficiency / 100.0) * (46.0<ppg> |> ppgToHwe)))
 
 
@@ -122,3 +122,4 @@ module Caculations =
 
 
     //IBU
+
