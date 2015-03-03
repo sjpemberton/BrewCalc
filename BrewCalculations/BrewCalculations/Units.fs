@@ -79,3 +79,7 @@ module Conversions =
     let toCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
     let hweToPPG (hwe:float<hwe>) = hwe / hweInPpg
     let ppgToHwe (ppg:float<ppg>) = ppg * hweInPpg
+    let ToPound (kg:float<kg>) = poundPerKg * kg
+    let ToKilograms (lb:float<lb>) = lb / poundPerKg
+    let ToLitres (litres:float<usGal>) = litres * litresPerUsGallon
+    let ToUsGallons (gallons:float<L>) = gallons / litresPerUsGallon
