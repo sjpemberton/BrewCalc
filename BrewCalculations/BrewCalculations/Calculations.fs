@@ -42,8 +42,8 @@ module Caculations =
         FloatWithMeasure 131.0 * (og - fg)
 
     ///Calculates required Grain in weight from the target gravity points and effective malt potential (in relation to a given weight).
-    let GrainRequired<[<Measure>] 'u> (gravityPoints:float<gp>) effectivePotential :float<'u> =
-        FloatWithMeasure (float gravityPoints / effectivePotential)
+    let GrainRequired<[<Measure>]'u> (gravityPoints:float<gp>) (effectivePotential:float<gp/'u>) =
+        gravityPoints / effectivePotential
 
     ///Mash Efficiency from points - Pre-boil points / Potential max points
     let Efficiency (potential:float<gp>) (actual:float<gp>) = 
@@ -83,10 +83,10 @@ module Caculations =
 
     ///Required grain in pound based on a malt potential in %, mash efficiency and total gravity points
     let RequiredGrainInPounds (gravityPoints:float<gp>) (potential:float<percentage>) (efficiency:float<percentage>)  =
-        GrainRequired<lb> gravityPoints (float((potential / 100.0) * (efficiency / 100.0) * 46.0))
+        GrainRequired<lb> gravityPoints (float((potential / 100.0) * (efficiency / 100.0) * 46.0<ppg>) * 1.0<pgp>)
 
-    ///The potential gravity that an amount of grain in lb with the given ppg at a particular efficiency for a target volume 
-    let EstimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<gp / lb>) (efficiency:float<percentage>) =
+    ///The estimated gravity of wort created from an amount of grain in lb with the given ppg, at a particular efficiency and for a target volume
+    let EstimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<pgp>) (efficiency:float<percentage>) =
         ((grainPotential * grain * (float efficiency / 100.0)) / vol) * 1.0<usGal>
         |> ToGravity
 
@@ -109,7 +109,7 @@ module Caculations =
 
     ///Required grain in kilo based on a malt potential in HWE, mash efficiency and total gravity points
     let RequiredGrainInKilo (gravityPoints:float<gp>) (potential:float<hwe>) (efficiency:float<percentage>)  =
-        GrainRequired<kg> gravityPoints (float(potential * (efficiency / 100.0) * (46.0<ppg> |> ppgToHwe)))
+        GrainRequired<kg> gravityPoints (float(potential * (efficiency / 100.0) * (46.0<ppg> |> ppgToHwe)) * 1.0<gp/kg>)
 
 
 
