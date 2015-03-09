@@ -81,5 +81,5 @@ module Conversions =
     let ppgToHwe (ppg:float<ppg>) = ppg * hweInPpg
     let ToPound (kg:float<kg>) = poundPerKg * kg
     let ToKilograms (lb:float<lb>) = lb / poundPerKg
-    let ToLitres (litres:float<usGal>) = litres * litresPerUsGallon
-    let ToUsGallons (gallons:float<L>) = gallons / litresPerUsGallon
+    let ToLitres (gallons:float<usGal>) = litres * litresPerUsGallon
+    let ToUsGallons (litres:float<L>) = gallons / litresPerUsGallon
