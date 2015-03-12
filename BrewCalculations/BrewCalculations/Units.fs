@@ -1,80 +1,76 @@
-﻿namespace BrewCalculations
+﻿///Naemspace containing Units of Measure for use with Brewing Calculations
+namespace Units
 
 open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 
-///Module containing Units of Measure for use with Brewing Calculations
-module Units =
+(* Define custom units of measure *)
 
-    (* Define custom units of measure *)
+///Percentage
+[<Measure>]type percentage
 
-    ///Percentage
-    [<Measure>]type percentage
+//Temp
+///Degrees Celsius
+[<Measure>] type degC
+///Degrees Fahrenheit
+[<Measure>] type degF
 
-    //Temp
-    ///Degrees Celsius
-    [<Measure>] type degC
-    ///Degrees Fahrenheit
-    [<Measure>] type degF
+//Volumes
+///Litres - m^3/1000
+[<Measure>] type L 
 
-    //Volumes
-    ///Litres - m^3/1000
-    [<Measure>] type L 
+///Imperial Gallon
+[<Measure>] type Gal
 
-    ///Imperial Gallon
-    [<Measure>] type Gal
+///US Gallon
+[<Measure>] type usGal
 
-    ///US Gallon
-    [<Measure>] type usGal
+//weights
+///Grams
+[<Measure>] type g
 
-    //weights
-    ///Grams
-    [<Measure>] type g
+///Pound
+[<Measure>] type lb
 
-    ///Pound
-    [<Measure>] type lb
+///Ounces
+[<Measure>] type oz
 
-    ///Ounces
-    [<Measure>] type oz
+//Gravity
+///Specific Gravity - Ratio of density compared to water measured in Kg/L
+[<Measure>] type sg = kg / L  //gp / usGal
 
-    //Gravity
-    ///Specific Gravity - Ratio of density compared to water measured in Kg/L
-    [<Measure>] type sg = kg / L  //gp / usGal
+///Gravity Point - A Simplified brewing unit for amount of sugar dissolved in solution
+[<Measure>] type gp
 
-    ///Gravity Point - A Simplified brewing unit for amount of sugar dissolved in solution
-    [<Measure>] type gp
+///The number of gravity points per Gallon(US
+[<Measure>] type ppg = gp / usGal
 
-    ///The number of gravity points per Gallon(US
-    [<Measure>] type ppg = gp / usGal
+///Potential Gravity Points The number of Gravity points in a lb of malt
+[<Measure>] type pgp = gp / lb
 
-    ///Potential Gravity Points The number of Gravity points in a lb of malt
-    [<Measure>] type pgp = gp / lb
+///Hot Water Extract. Points per Litre per Kilo
+[<Measure>] type hwe = gp / L
 
-    ///Hot Water Extract. Points per Litre per Kilo
-    [<Measure>] type hwe = gp / L
+    ///The number of gravity points per Litre
+[<Measure>] type ppl = gp / L
 
-     ///The number of gravity points per Litre
-    [<Measure>] type ppl = gp / L
-
-    ///Gravity Points - A brewing simplification of specific gravity
-    type GravityPoint =
-        | PPG of float<ppg>
-        | HWE of float<hwe>
+///Gravity Points - A brewing simplification of specific gravity
+type GravityPoint =
+    | PPG of float<ppg>
+    | HWE of float<hwe>
 
 
-    //Alcohol
-    /// Alcohol By Volume
-    [<Measure>] type ABV 
+//Alcohol
+/// Alcohol By Volume
+[<Measure>] type ABV 
 
-    //Bitterness
-    [<Measure>] type IBU
+//Bitterness
+[<Measure>] type IBU
 
-    ///Alpha Acid Units
-    [<Measure>] type AAU
+///Alpha Acid Units
+[<Measure>] type AAU
 
 ///Simple Conversion constants and functions 
 module Conversions =
-
-    open Units
 
     let sucroseBasePoints = 46.0<ppg>
     let litresPerGal = 4.54609<L/Gal>
