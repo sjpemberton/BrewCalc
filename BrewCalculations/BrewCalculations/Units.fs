@@ -50,7 +50,10 @@ module Units =
     [<Measure>] type pgp = gp / lb
 
     ///Hot Water Extract. Points per Litre per Kilo
-    [<Measure>] type hwe
+    [<Measure>] type hwe = gp / L
+
+     ///The number of gravity points per Litre
+    [<Measure>] type ppl = gp / L
 
     ///Gravity Points - A brewing simplification of specific gravity
     type GravityPoint =
@@ -60,7 +63,13 @@ module Units =
 
     //Alcohol
     /// Alcohol By Volume
-    [<Measure>] type abv 
+    [<Measure>] type ABV 
+
+    //Bitterness
+    [<Measure>] type IBU
+
+    ///Alpha Acid Units
+    [<Measure>] type AAU
 
 ///Simple Conversion constants and functions 
 module Conversions =
@@ -79,3 +88,7 @@ module Conversions =
     let toCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
     let hweToPPG (hwe:float<hwe>) = hwe / hweInPpg
     let ppgToHwe (ppg:float<ppg>) = ppg * hweInPpg
+    let ToPound (kg:float<kg>) = poundPerKg * kg
+    let ToKilograms (lb:float<lb>) = lb / poundPerKg
+    let ToLitres (gallons:float<usGal>) = gallons * litresPerUsGallon
+    let ToUsGallons (litres:float<L>) = litres / litresPerUsGallon
