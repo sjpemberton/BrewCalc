@@ -63,7 +63,13 @@ module Units =
 
     //Alcohol
     /// Alcohol By Volume
-    [<Measure>] type abv 
+    [<Measure>] type ABV 
+
+    //Bitterness
+    [<Measure>] type IBU
+
+    ///Alpha Acid Units
+    [<Measure>] type AAU
 
 ///Simple Conversion constants and functions 
 module Conversions =

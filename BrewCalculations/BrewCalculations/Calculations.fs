@@ -8,12 +8,12 @@ open Conversions
 
 /// Brewing Calculations for all stages of the brewing process
 ///
-/// ## Calculations
+/// Calculations
 ///
 module Caculations = 
 
     (**
-    Generic Functions 
+    Generic/Common Functions 
     *)
 
     ///Converts a Specific Gravity into brewing Specific Gravity Points
@@ -35,10 +35,10 @@ module Caculations =
         ((originalGravity - finalGravity) / (originalGravity - 1.0<sg>)) * 100.0<percentage>
 
     ///Estimated ABV
-    let AlcoholByVolume (originalGravity:float<sg>) (finalGravity:float<sg>) : float<abv> = 
+    let AlcoholByVolume (originalGravity:float<sg>) (finalGravity:float<sg>) : float<ABV> = 
         FloatWithMeasure ((1.05 / 0.79) * ((originalGravity - finalGravity) / finalGravity)) * 100.0
 
-    let ABVsimple (og:float<sg>) (fg:float<sg>) : float<abv> = 
+    let ABVsimple (og:float<sg>) (fg:float<sg>) : float<ABV> = 
         FloatWithMeasure 131.0 * (og - fg)
 
     ///Calculates required Grain in weight from the target gravity points and effective malt potential (in relation to a given weight).
@@ -82,7 +82,7 @@ module Caculations =
         ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
     ///Required grain in pound based on a malt potential in %, mash efficiency and total gravity points
-    let RequiredGrainInPounds (gravityPoints:float<gp>) (potential:float<percentage>) (efficiency:float<percentage>)  =
+    let RequiredGrainInPounds (gravityPoints:float<gp>) (potential:float<percentage>) (efficiency:float<percentage>) =
         GrainRequired<lb> gravityPoints (float((potential / 100.0) * (efficiency / 100.0) * 46.0<ppg>) * 1.0<pgp>)
 
     ///The estimated gravity of wort created from an amount of grain in lb with the given ppg, at a particular efficiency and for a target volume
@@ -123,3 +123,18 @@ module Caculations =
 
     //IBU
 
+    let CalculateAplhaAcidUnits (weight:float<oz>) (alpha:float<percentage>) :float<AAU> =
+        FloatWithMeasure (float(weight * alpha))
+
+    ///Calculates IBU (mg/L) from AAUs
+    let CalculateIBUsFromAAU (utilisation:float<percentage>) (aau:float<AAU>)  (volume:float<usGal>)  :float<IBU> = 
+        FloatWithMeasure (float(aau * utilisation * 74.89 / volume))
+
+    ///Calculates IBUS (mg/L) from AA% weight
+    let EstimateIBUs (utilisation:float<percentage>) (alpha:float<percentage>) (weight:float<oz>) (volume:float<usGal>) :float<IBU> =
+        CalculateIBUsFromAAU utilisation (CalculateAplhaAcidUnits weight alpha) volume
+
+    //The Tinseth Equation for hop utilisation. Time in minutes
+    let EstimateHopUtilisation (gravity:float<sg>) (time:float) :float<percentage> = 
+        (1.65 * 0.000125 ** (float gravity - 1.0)) * ((1.0 - 2.71828 ** (-0.04 * time)) / 4.15)
+        |> FloatWithMeasure
