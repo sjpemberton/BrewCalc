@@ -69,6 +69,21 @@ type GravityPoint =
 ///Alpha Acid Units
 [<Measure>] type AAU
 
+///Colour
+///SRM - Standard Reference Method
+[<Measure>] type SRM
+
+///European Brewing Convention
+[<Measure>] type EBC
+
+///Degrees Lovibond
+[<Measure>] type degL
+
+//Malt Colour Unit
+[<Measure>] type MCU = degL lb/usGal
+
+
+
 ///Simple Conversion constants and functions 
 module Conversions =
 
@@ -79,6 +94,7 @@ module Conversions =
     let hweInPpg = 8.3454<hwe/ppg>
     let ouncesPerPound = 16<oz/lb>
     let poundPerKg = 2.20462<lb/kg>
+    let srmPerEbc = 1.97<EBC/SRM>
 
     let toFahrenheit degreesC = degreesC * degreesFperC + 32.0<degF>
     let toCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
@@ -88,3 +104,4 @@ module Conversions =
     let ToKilograms (lb:float<lb>) = lb / poundPerKg
     let ToLitres (gallons:float<usGal>) = gallons * litresPerUsGallon
     let ToUsGallons (litres:float<L>) = litres / litresPerUsGallon
+    let ToEBC (srm:float<SRM>) = srm * srmPerEbc

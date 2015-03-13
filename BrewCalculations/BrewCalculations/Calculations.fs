@@ -128,3 +128,20 @@ let EstimateIBUs (utilisation:float<percentage>) (alpha:float<percentage>) (weig
 let EstimateHopUtilisation (gravity:float<sg>) (time:float) :float<percentage> = 
     (1.65 * 0.000125 ** (float gravity - 1.0)) * ((1.0 - 2.71828 ** (-0.04 * time)) / 4.15)
     |> FloatWithMeasure
+
+
+///Colour
+///Calculates an MCU value from grain weight, colour in degrees lovibond and volume
+let CalculateMcu (weight:float<lb>) (colour:float<degL>) (volume:float<usGal>) :float<MCU> =
+    weight * colour / volume
+
+///Returns the SRM value from an MCU value
+let CalculateSrmFromMcu (mcu:float<MCU>) :float<SRM> = 
+    FloatWithMeasure 1.4922 * (float mcu ** 0.6859)
+
+//Taken from Malt.io
+///Convert an SRM value into rough RGB 
+let SrmToRgb (srm:float<SRM>) = 
+    (System.Math.Round(min 255.0 (max 0.0 (255.0 * 0.975 ** float srm))),
+     System.Math.Round(min 255.0 (max 0.0 (245.0 * 0.88 ** float srm))),
+     System.Math.Round(min 255.0 (max 0.0 (220.0 * 0.7 ** float srm))))
