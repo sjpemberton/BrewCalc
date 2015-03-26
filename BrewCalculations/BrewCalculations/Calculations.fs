@@ -10,6 +10,12 @@ open Units
 open Conversions
 
 
+(** Types for use with the calculations *)
+
+///A particular amount of a malt with a specified potential
+type Malt<[<Measure>] 'u> = 
+    {Weight:float<'u>; Potential:float<gp/'u>;}
+
 (**
 Generic/Common Functions 
 *)
@@ -47,8 +53,6 @@ let GrainRequired<[<Measure>]'u> (gravityPoints:float<gp>) (effectivePotential:f
 let Efficiency (potential:float<gp>) (actual:float<gp>) = 
     (actual / potential) * 1.0<percentage>
 
-type Malt<[<Measure>] 'u> = 
-    {Weight:float<'u>; Potential:float<gp/'u>;}
 
 
 
@@ -69,10 +73,8 @@ let RequiredPoints (targetGravity:float<sg>) (vol:float<usGal>) =
 let MaxPotentialPoints (grainPotential:float<pgp>) (grain:float<lb>) (vol:float<usGal>) :float<ppg> = 
     (grainPotential * grain) / vol
 
-
-(**Efficiency taking into account losses during process
-    Can be used to measure efficiency at various stages. Just substitute in the actual SG and Vol at a particular time. eg pre or post boil
-*)
+///Efficiency taking into account losses during process  
+///Can be used to measure efficiency at various stages. Just substitute in the actual points and Vol at a particular time. eg pre or post boil
 let CalculateBrewHouseEfficiency (potential:float<ppg>) (actual:float<ppg>) (targetVol:float<usGal>) (actualVol:float<usGal>) =
     ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
@@ -90,8 +92,6 @@ let EstimateGravityFromGrainBill vol efficiency (grainBill:list<Malt<lb>>) =
 
 
 
-
-
 (**
 Functions that work on British/Imperial units - HWE, L, Kg
 *)
@@ -103,6 +103,9 @@ let private GrainInKilo effectivePoints =
 let RequiredGrainInKilo (gravityPoints:float<gp>) (potential:float<hwe>) (efficiency:float<percentage>)  =
     GrainRequired<kg> gravityPoints (float(potential * (efficiency / 100.0) * (46.0<ppg> |> ppgToHwe)) * 1.0<gp/kg>)
 
+///Efficiency Calculation using Litres and HWE
+let CalculateBrewHouseEfficiencyLitres (potential:float<hwe>) (actual:float<hwe>) (targetVol:float<L>) (actualVol:float<L>) =
+    ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
 //Mash Efficiency - alternate - using a 'standard' 37.0 ppg. based on lager malt maximum. For use when individual grain potential is not known
 //let alternativeEfficiency (og:float<sg>) (vol : float<'u>) (grain:float<'v>) :float<percentage> =
@@ -145,3 +148,30 @@ let SrmToRgb (srm:float<SRM>) =
     (System.Math.Round(min 255.0 (max 0.0 (255.0 * 0.975 ** float srm))),
      System.Math.Round(min 255.0 (max 0.0 (245.0 * 0.88 ** float srm))),
      System.Math.Round(min 255.0 (max 0.0 (220.0 * 0.7 ** float srm))))
+
+
+
+//Priming Sugar 
+//These calculations all expect grams and litre units
+
+///Calculates the final CO2 level in a beer - co2PerGram is CO2 created per gram of sugar
+let CalculateCo2 co2PerGram (currentCarb : float<CO2>) (sugar : float<g>) (volume : float<L>) =
+    currentCarb + co2PerGram * sugar / volume
+
+///Carbonation added by Corn sugar (Glucose Monohydrate)
+let CalculatePrimingCornSugar = CalculateCo2 (0.5 * 0.91) 
+///Carbonation with table sugar
+let CalculatePrimingTableSugar = CalculateCo2 (0.5)
+///Carbonation with Dried Malt Extract (DME)
+let CalculatePrimingDme = CalculateCo2 (0.5 * 0.82 * 0.80)
+
+///Calculates the amount of sugar required to create the target amount of CO2 - co2PerGram is CO2 created per gram of sugar
+let CalculatePrimingSugar co2PerGram  (currentCarb : float<CO2>) (targetCarb : float<CO2>) (volume : float<L>) :float<g> =
+    volume * (targetCarb - currentCarb) / co2PerGram
+
+///Amount of Corn sugar to produce target CO2
+let CalculateRequiredCornSugar = CalculatePrimingSugar (0.5 * 0.91)
+///Amount of Table sugar to produce target CO2
+let CalculateRequiredTableSugar = CalculatePrimingSugar (0.5)
+///Amount of Dried MAlt Extrcat (DME) to produce target CO2
+let CalculateRequiredDme = CalculatePrimingSugar (0.5 * 0.82 * 0.80)
