@@ -50,9 +50,6 @@ open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 ///Hot Water Extract. Points per Litre per Kilo
 [<Measure>] type hwe = gp / L
 
-    ///The number of gravity points per Litre
-[<Measure>] type ppl = gp / L
-
 ///Gravity Points - A brewing simplification of specific gravity
 type GravityPoint =
     | PPG of float<ppg>
@@ -83,6 +80,9 @@ type GravityPoint =
 [<Measure>] type MCU = degL lb/usGal
 
 
+///Carbonation
+///CO2 - measured in g per L
+[<Measure>] type CO2 = g/L
 
 ///Simple Conversion constants and functions 
 module Conversions =
