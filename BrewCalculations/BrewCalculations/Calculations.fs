@@ -87,8 +87,8 @@ let EstimateGravity  (vol:float<usGal>) (grain:float<lb>) (grainPotential:float<
     ((grainPotential * grain * (float efficiency / 100.0)) / vol) * 1.0<usGal>
     |> ToGravity
 
-let EstimateGravityFromGrainBill vol efficiency (grainBill:list<Malt<lb>>) = 
-    List.fold (fun acc m -> acc + EstimateGravity vol m.Weight m.Potential efficiency) 0.0<sg> grainBill
+let EstimateGravityFromGrainBill vol efficiency (grainBill: (float<lb> * float<gp/lb>) list) = 
+    List.fold (fun acc m -> acc + EstimateGravity vol (fst m) (snd m) efficiency) 0.0<sg> grainBill
 
 
 

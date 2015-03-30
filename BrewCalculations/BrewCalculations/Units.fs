@@ -1,9 +1,19 @@
-﻿///Naemspace containing Units of Measure for use with Brewing Calculations
+﻿///Namespace containing Units of Measure for use with Brewing Calculations
 namespace Units
 
 open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 
 (* Define custom units of measure *)
+
+//Time
+///Days
+[<Measure>]type day
+///Days
+[<Measure>]type hour
+///Days
+[<Measure>]type minute
+///Days
+[<Measure>]type second
 
 ///Percentage
 [<Measure>]type percentage
