@@ -58,7 +58,7 @@ let Efficiency (potential:float<gp>) (actual:float<gp>) =
 
 
 (** 
-Functions working on US/Metric Units. EG: PPG, lb, oz, usGallon 
+Functions working on US/Imperial Units. EG: PPG, lb, oz, usGallon 
 *)
 
 ///Converts a points per gal (gp / usGal) and volume into total gravity points in that volume
@@ -93,7 +93,7 @@ let EstimateGravityFromGrainBill vol efficiency (grainBill:list<Malt<lb>>) =
 
 
 (**
-Functions that work on British/Imperial units - HWE, L, Kg
+Functions that work on British/Metric units - HWE, L, Kg
 *)
 
 let private GrainInKilo effectivePoints =
