@@ -38,6 +38,9 @@ open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 ///Grams
 [<Measure>] type g
 
+///Millgrams
+[<Measure>] type mg
+
 ///Pound
 [<Measure>] type lb
 
@@ -63,21 +66,15 @@ open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 ///Hot Water Extract. Points per Litre per Kilo
 [<Measure>] type hwe = gp / L
 
-///Gravity Points - A brewing simplification of specific gravity
-type GravityPoint =
-    | PPG of float<ppg>
-    | HWE of float<hwe>
-
-
 //Alcohol
 /// Alcohol By Volume
 [<Measure>] type ABV 
 
 //Bitterness
-[<Measure>] type IBU
+[<Measure>] type IBU = mg /L
 
 ///Alpha Acid Units
-[<Measure>] type AAU
+[<Measure>] type AAU = g/L
 
 ///Colour
 ///SRM - Standard Reference Method
@@ -91,7 +88,6 @@ type GravityPoint =
 
 //Malt Colour Unit
 [<Measure>] type MCU = degL lb/usGal
-
 
 ///Carbonation
 ///CO2 - measured in g per L
@@ -110,10 +106,10 @@ module Conversions =
     let poundPerKg = 2.20462<lb/kg>
     let srmPerEbc = 1.97<EBC/SRM>
 
-    let toFahrenheit degreesC = degreesC * degreesFperC + 32.0<degF>
-    let toCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
-    let hweToPPG (hwe:float<hwe>) = hwe / hweInPpg
-    let ppgToHwe (ppg:float<ppg>) = ppg * hweInPpg
+    let ToFahrenheit degreesC = degreesC * degreesFperC + 32.0<degF>
+    let ToCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
+    let ToPPG (hwe:float<hwe>) = hwe / hweInPpg
+    let ToHwe (ppg:float<ppg>) = ppg * hweInPpg
     let ToPGP (pgpkg:float<pgpkg>) = pgpkg / potentialPerKiloInPound
     let ToPGPKg (pgp:float<pgp>) = pgp * potentialPerKiloInPound
     let ToPound (kg:float<kg>) = poundPerKg * kg
@@ -121,3 +117,4 @@ module Conversions =
     let ToLitres (gallons:float<usGal>) = gallons * litresPerUsGallon
     let ToUsGallons (litres:float<L>) = litres / litresPerUsGallon
     let ToEBC (srm:float<SRM>) = srm * srmPerEbc
+    let ToSRM (ebc:float<EBC>) = ebc / srmPerEbc
