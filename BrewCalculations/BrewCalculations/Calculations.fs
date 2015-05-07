@@ -86,10 +86,14 @@ let MaxPotentialPoints (grainPotential:float<pgpkg>) (grain:float<kg>) (vol:floa
 let CalculateBrewHouseEfficiency (potential:float<hwe>) (actual:float<hwe>) (targetVol:float<L>) (actualVol:float<L>) =
     ((actual * actualVol) / (potential * targetVol)) * 1.0<percentage>
 
-///The estimated gravity of wort created from an amount of grain in lb with the given ppg, at a particular efficiency and for a target volume
-let EstimateGravity  (vol:float<L>) (grain:float<kg>) (grainPotential:float<pgpkg>) (efficiency:float<percentage>) =
+let EstimateGravityPoints (grainPotential:float<pgpkg>) (grain:float<kg>) (vol:float<L>) (efficiency:float<percentage>) :float<gp>=
     ((grainPotential * grain * (float efficiency / 100.0)) / vol) * 1.0<L>
+
+///The estimated gravity of wort created from an amount of grain in lb with the given ppg, at a particular efficiency and for a target volume
+let EstimateGravity  (grainPotential:float<pgpkg>) (grain:float<kg>) (vol:float<L>) (efficiency:float<percentage>) =
+    EstimateGravityPoints grainPotential grain vol efficiency
     |> ToGravity
+
 
 ///Required grain in kilo based on a malt potential in HWE, mash efficiency and total gravity points
 let RequiredGrainInKilo (gravityPoints:float<gp>) (potential:float<hwe>) (efficiency:float<percentage>)  =
