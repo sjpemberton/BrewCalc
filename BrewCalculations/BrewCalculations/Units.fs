@@ -1,9 +1,19 @@
-﻿///Naemspace containing Units of Measure for use with Brewing Calculations
+﻿///Namespace containing Units of Measure for use with Brewing Calculations
 namespace Units
 
 open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 
 (* Define custom units of measure *)
+
+//Time
+///Days
+[<Measure>]type day
+///Days
+[<Measure>]type hour
+///Days
+[<Measure>]type minute
+///Days
+[<Measure>]type second
 
 ///Percentage
 [<Measure>]type percentage
@@ -28,6 +38,9 @@ open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 ///Grams
 [<Measure>] type g
 
+///Millgrams
+[<Measure>] type mg
+
 ///Pound
 [<Measure>] type lb
 
@@ -47,24 +60,21 @@ open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
 ///Potential Gravity Points The number of Gravity points in a lb of malt
 [<Measure>] type pgp = gp / lb
 
+///Potential Gravity Points - The number of Gravity points in a Kg of malt
+[<Measure>] type pgpkg = gp / kg
+
 ///Hot Water Extract. Points per Litre per Kilo
 [<Measure>] type hwe = gp / L
-
-///Gravity Points - A brewing simplification of specific gravity
-type GravityPoint =
-    | PPG of float<ppg>
-    | HWE of float<hwe>
-
 
 //Alcohol
 /// Alcohol By Volume
 [<Measure>] type ABV 
 
 //Bitterness
-[<Measure>] type IBU
+[<Measure>] type IBU = mg /L
 
 ///Alpha Acid Units
-[<Measure>] type AAU
+[<Measure>] type AAU = g/L
 
 ///Colour
 ///SRM - Standard Reference Method
@@ -79,7 +89,6 @@ type GravityPoint =
 //Malt Colour Unit
 [<Measure>] type MCU = degL lb/usGal
 
-
 ///Carbonation
 ///CO2 - measured in g per L
 [<Measure>] type CO2 = g/L
@@ -92,16 +101,20 @@ module Conversions =
     let litresPerUsGallon = 3.78541<L/usGal>
     let degreesFperC = 1.8<degF/degC>
     let hweInPpg = 8.3454<hwe/ppg>
+    let potentialPerKiloInPound = 8.3454<pgpkg/pgp>
     let ouncesPerPound = 16<oz/lb>
     let poundPerKg = 2.20462<lb/kg>
     let srmPerEbc = 1.97<EBC/SRM>
 
-    let toFahrenheit degreesC = degreesC * degreesFperC + 32.0<degF>
-    let toCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
-    let hweToPPG (hwe:float<hwe>) = hwe / hweInPpg
-    let ppgToHwe (ppg:float<ppg>) = ppg * hweInPpg
+    let ToFahrenheit degreesC = degreesC * degreesFperC + 32.0<degF>
+    let ToCelsius degreesF = (degreesF - 32.0<degF>) / degreesFperC 
+    let ToPPG (hwe:float<hwe>) = hwe / hweInPpg
+    let ToHwe (ppg:float<ppg>) = ppg * hweInPpg
+    let ToPGP (pgpkg:float<pgpkg>) = pgpkg / potentialPerKiloInPound
+    let ToPGPKg (pgp:float<pgp>) = pgp * potentialPerKiloInPound
     let ToPound (kg:float<kg>) = poundPerKg * kg
     let ToKilograms (lb:float<lb>) = lb / poundPerKg
     let ToLitres (gallons:float<usGal>) = gallons * litresPerUsGallon
     let ToUsGallons (litres:float<L>) = litres / litresPerUsGallon
     let ToEBC (srm:float<SRM>) = srm * srmPerEbc
+    let ToSRM (ebc:float<EBC>) = ebc / srmPerEbc
